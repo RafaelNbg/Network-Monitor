@@ -1,18 +1,28 @@
 from descoberta import *
+from database import *
 import time
 
-lista_dispositivos = encontrar_dispositivos()
-quant_dispositivos = len(lista_dispositivos)
+conexao = conectar_ao_banco_de_dados()
 
-print('Quantidade de dispositivos encontrados:', quant_dispositivos, '\n')
+if conexao != None:
+    try:
+        lista_dispositivos = encontrar_dispositivos()
+        quant_dispositivos = len(lista_dispositivos)
 
-if quant_dispositivos != 0:
+        print('\nQuantidade de dispositivos encontrados:', quant_dispositivos, '\n')
 
-    while True:
-        for disp in lista_dispositivos:
-            disp.ping()
-            disp.describe()
-        
-        time.sleep(2)
-else:
-    print('Nenhum dispositivo encontrado na rede!')
+        if quant_dispositivos != 0:
+
+            while True:
+                for disp in lista_dispositivos:
+                    disp.ping()
+                    disp.describe()
+                    adicionar_ao_banco(disp, conexao)
+                
+                time.sleep(2)
+        else:
+            print('Nenhum dispositivo encontrado na rede!')
+
+    finally:
+        conexao.close()
+        print('Conexão com o banco de dados encerrada!')
