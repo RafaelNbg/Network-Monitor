@@ -24,14 +24,14 @@ class Dispositivo():
     
         if resultado.returncode == 0:
             self.pings_sucesso = self.pings_sucesso + 1
-            lt = re.search(r'tempo=(\d+)ms', resultado.stdout)
+            self.status = 'Online'
+
+            lt = re.search(r'(?:tempo|time)\s*([=<])\s*(\d+)\s*ms', resultado.stdout)
 
             if lt != None:
-                self.latencia = int(lt.group(1))
-                self.status = 'Online'
+                self.latencia = 0.5 if lt.group(1) == '<' else int(lt.group(2))
             else:
                 self.latencia = None
-                self.status = 'Online'
         
         else:
             self.pings_falha = self.pings_falha + 1

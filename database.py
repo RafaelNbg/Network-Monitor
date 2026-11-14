@@ -44,3 +44,42 @@ def adicionar_ao_banco(dispositivo, conexao):
 
     conexao.commit()
     cursor.close()
+
+def consultar_banco(tabela, conexao):
+    tabelas_permitidas = ["dispositivos", "medicoes"]
+
+    if tabela in tabelas_permitidas:
+        comando = f"SELECT * FROM {tabela}"
+        cursor = conexao.cursor(dictionary=True)
+        cursor.execute(comando)
+        resposta = cursor.fetchall()
+        cursor.close()
+        
+        return resposta
+
+def consultar_historico_dispositivo(id, conexao):
+    comando = "SELECT status, latencia, hora FROM medicoes WHERE dispositivo_id = %s;"
+    cursor = conexao.cursor(dictionary=True)
+    cursor.execute(comando, (id,))  
+    resposta = cursor.fetchall()
+    cursor.close()
+
+    return resposta
+
+def consultar_ultima_medicao(id, conexao):
+    comando = "SELECT status, latencia, hora FROM medicoes WHERE dispositivo_id = %s ORDER BY hora DESC LIMIT 1"
+    cursor = conexao.cursor(dictionary=True)
+    cursor.execute(comando, (id,))  
+    resposta = cursor.fetchone()
+    cursor.close()
+    
+    return resposta
+
+def consultar_medicao_por_datahora(id, horainicio, horafim, conexao):
+    comando = "SELECT status, latencia, hora FROM medicoes WHERE dispositivo_id = %s AND hora >= %s AND hora <= %s"
+    cursor = conexao.cursor(dictionary=True)
+    cursor.execute(comando, (id, horainicio, horafim))  
+    resposta = cursor.fetchall()
+    cursor.close()
+    
+    return resposta

@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Network Monitor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="dashboard">
+
+        <!-- Menu lateral -->
+        <aside class="sidebar">
+
+            <div class="logo">
+                <h2>NETWORK<span>MONITOR</span></h2>
+            </div>
+
+            <nav>
+                <a href="#visao-geral" class="active" data-pagina="visao-geral"
+                   data-titulo="Visão geral" data-subtitulo="Monitoramento da sua rede local">Visão geral</a>
+
+                <a href="#dispositivos" data-pagina="dispositivos"
+                   data-titulo="Dispositivos" data-subtitulo="Dispositivos identificados na rede">Dispositivos</a>
+
+                <a href="#historico" data-pagina="historico"
+                   data-titulo="Histórico" data-subtitulo="Latência e disponibilidade ao longo do tempo">Histórico</a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <span>Network Monitor v1.1</span>
+            </div>
+
+        </aside>
+
+
+        <!-- Conteúdo principal -->
+        <main class="main-content">
+
+            <header class="topbar">
+                <div>
+                    <h1 id="titulo-pagina">Visão geral</h1>
+                    <p id="subtitulo-pagina">Monitoramento da sua rede local</p>
+                </div>
+
+                <div class="connection-status" id="status-conexao" role="status" aria-live="polite">
+                    <span class="status-dot"></span>
+                    <span id="texto-conexao">Conectando...</span>
+                </div>
+            </header>
+
+            <!-- Aviso de erro ou de falta de dados -->
+            <div id="aviso" class="aviso" role="alert" hidden></div>
+
+
+            <!-- Página: Visão geral -->
+            <section id="pagina-visao-geral" class="pagina ativa">
+
+                <section class="metrics">
+                    <div class="metric-card">
+                        <p>Total de dispositivos</p>
+                        <h2 id="total-dispositivos">--</h2>
+                        <span>Dispositivos identificados</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <p>Dispositivos online</p>
+                        <h2 id="dispositivos-online">--</h2>
+                        <span>Atualmente disponíveis</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <p>Dispositivos offline</p>
+                        <h2 id="dispositivos-offline">--</h2>
+                        <span>Sem resposta</span>
+                    </div>
+
+                    <div class="metric-card">
+                        <p>Latência média</p>
+                        <h2 id="latencia-media">--</h2>
+                        <span>Dos dispositivos online</span>
+                    </div>
+                </section>
+
+                <section class="chart-section">
+                    <div class="section-header">
+                        <div>
+                            <h2>Latência atual por dispositivo</h2>
+                            <p>Última medição de cada dispositivo. Barras vermelhas indicam dispositivos offline.</p>
+                        </div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="grafico-visao"></canvas>
+                    </div>
+
+                    <p id="mensagem-visao" class="chart-message">Aguardando dados...</p>
+                </section>
+
+            </section>
+
+
+            <!-- Página: Dispositivos -->
+            <section id="pagina-dispositivos" class="pagina">
+
+                <section class="devices-section">
+
+                    <div class="section-header">
+                        <div>
+                            <h2>Dispositivos da rede</h2>
+                            <p id="resumo-tabela">Acompanhamento dos dispositivos identificados</p>
+                        </div>
+
+                        <button id="atualizar" type="button">Atualizar dados</button>
+                    </div>
+
+                    <div class="toolbar">
+                        <input type="search" id="busca" placeholder="Buscar por nome, IP ou MAC" aria-label="Buscar dispositivo">
+
+                        <select id="filtro-status" aria-label="Filtrar por status">
+                            <option value="">Todos os status</option>
+                            <option value="Online">Online</option>
+                            <option value="Offline">Offline</option>
+                        </select>
+                    </div>
+
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Dispositivo</th>
+                                    <th>Endereço IP</th>
+                                    <th>Endereço MAC</th>
+                                    <th>Status</th>
+                                    <th>Latência</th>
+                                    <th>Última medição</th>
+                                    <th>Ações</th>
+                                </tr>
+                            </thead>
+
+                            <tbody id="lista-dispositivos">
+                                <tr><td colspan="7" class="vazio">Carregando dispositivos...</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                </section>
+
+            </section>
+
+
+            <!-- Página: Histórico -->
+            <section id="pagina-historico" class="pagina">
+
+                <section class="chart-section">
+
+                    <div class="section-header">
+                        <div>
+                            <h2>Histórico de latência</h2>
+                            <p>Acompanhe o tempo de resposta de um dispositivo</p>
+                        </div>
+
+                        <div class="controles">
+                            <select id="selecionar-dispositivo" aria-label="Dispositivo">
+                                <option value="">Selecione um dispositivo</option>
+                            </select>
+
+                            <select id="limite-historico" aria-label="Quantidade de medições">
+                                <option value="50">Últimas 50</option>
+                                <option value="100">Últimas 100</option>
+                                <option value="300">Últimas 300</option>
+                                <option value="0">Todas</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="stats">
+                        <div class="stat"><span>Medições</span><strong id="stat-medicoes">--</strong></div>
+                        <div class="stat"><span>Mínima</span><strong id="stat-min">--</strong></div>
+                        <div class="stat"><span>Média</span><strong id="stat-media">--</strong></div>
+                        <div class="stat"><span>Máxima</span><strong id="stat-max">--</strong></div>
+                        <div class="stat"><span>Perda de pacotes</span><strong id="stat-perda">--</strong></div>
+                    </div>
+
+                    <div class="chart-container">
+                        <canvas id="grafico-latencia"></canvas>
+                    </div>
+
+                    <p id="mensagem-grafico" class="chart-message">
+                        Selecione um dispositivo para visualizar seu histórico.
+                    </p>
+
+                </section>
+
+            </section>
+
+
+        </main>
+
+    </div>
+
+    <!-- Biblioteca Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <!-- JavaScript do projeto -->
+    <script src="script.js"></script>
+
+</body>
+
+</html>
